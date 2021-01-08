@@ -26,7 +26,7 @@ all: 170/posix.$(so) 170.sld
 	$(info ;; Generating sld...)
 	$(TX) $@ -- $(CHIBI) $<
 
-tools/GenerateErrorNames: tools/errnames.sh
+tools/GenerateErrorNames: tools/errnames.sh tools/errno_utils.h
 	$(info ;; Compiling errno tool...)
 	$(TX) $@.tmp.c -- $<
 	$(CC) $(CFLAGS) -o $@ $@.tmp.c
