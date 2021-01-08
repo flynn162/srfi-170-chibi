@@ -1,0 +1,1 @@
+CFLAGS='-I"/opt/chibi-scheme/include/" -L"/opt/chibi-scheme/lib" -Wl,-rpath="/opt/chibi-scheme/lib"' make
