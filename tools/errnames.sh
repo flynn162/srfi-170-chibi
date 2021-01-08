@@ -1,5 +1,4 @@
 #!/bin/bash
-set -o pipefail
 
 maybeSpace='[[:space:]]*'
 atLeastOneSpace='[[:space:]]+'
@@ -33,6 +32,7 @@ function generate-source {
     echo '}'
 }
 
+set -e -o pipefail
 generate-source
 
 ## https://stackoverflow.com/a/19885466
