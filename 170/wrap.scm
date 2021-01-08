@@ -1,5 +1,25 @@
 ;; Section 3.1
 
+(define-record-type PosixError
+  (%make-posix-error number name message)
+  posix-error?
+  (number posix-error-number)
+  (name posix-error-name)
+  (message posix-error-message)
+  )
+
+(define (posix-error errno)
+  (define (cmp a b)
+    (cond ((= a b) 0)
+          ((< a b) -1)
+          (#t 1)))
+
+  (let* ((idx (vector-binary-search errno-values errno cmp))
+         (name (if (not idx) 'EUNKNOWN (vector-ref errno-names idx)))
+         )
+    (%make-posix-error errno name "There was an error")
+    ))
+
 ;; Section 3.2
 
 ;; Section 3.3
@@ -12,7 +32,7 @@
   (lambda (arg)
     (let ((result (proc arg)))
       (if (equal? #f result)
-          (error (pa-errno))
+          (raise (posix-error (pa-errno)))
           result)
       )))
 

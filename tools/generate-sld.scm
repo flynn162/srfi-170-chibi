@@ -136,6 +136,7 @@
             (prefix (chibi filesystem) cs:)
             (prefix (chibi system) cs:)
             (prefix (chibi process) cs:)
+            (only (srfi 133) vector-binary-search)
             ))
   (writeln '(include-shared "./170/posix"))
   (writeln '(include "./170/wrap.scm"))
