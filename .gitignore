@@ -4,3 +4,6 @@
 # compiled binaries
 tools/GenerateErrorNames
 *.so
+
+# temp files
+.DS_Store

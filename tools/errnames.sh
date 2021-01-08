@@ -25,7 +25,7 @@ function generate-source {
     echo '#include <errno.h>' \
         | $CC -dM -E - \
         | awk /"$REGEX"/'{print $(NF),$(NF-1)}' \
-        | sed -E -e 's/^[0-9]+ //' -e 's/[[:space:]]+/\n/g' \
+        | sed -E -e 's/^[0-9]+ //' -e $'s/[[:space:]]+/\\\n/g' \
         | sed -e s/'^'/"$PREFIX"/ -e s/'$'/"$SUFFIX"/
 
     echo 'print_trailer();'
