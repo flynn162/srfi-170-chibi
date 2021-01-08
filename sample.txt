@@ -1,1 +1,3 @@
-CFLAGS='-I"/opt/chibi-scheme/include/" -L"/opt/chibi-scheme/lib" -Wl,-rpath="/opt/chibi-scheme/lib"' make
+ROOT=~/Applications/chibi
+#ROOT=/opt/chibi-scheme
+CFLAGS="-I${ROOT}/include -L${ROOT}/lib -Wl,-rpath,${ROOT}/lib" make
