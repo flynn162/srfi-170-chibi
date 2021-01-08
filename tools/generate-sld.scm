@@ -1,5 +1,9 @@
 (import (scheme base)
         (scheme write)
+        (scheme cxr)
+        (only (srfi 95) sort!)
+        (srfi 69)
+        (only (chibi process) process->sexp)
         )
 
 (define (writeln object)
@@ -34,6 +38,18 @@
          )
       ))
    fields))
+
+(define (remove-duplicates input-list key-getter)
+  (let ((ht (make-hash-table)))
+    (for-each
+     (lambda (element)
+       (let ((key (key-getter element)))
+         (if (not (hash-table-exists? ht key))
+             (hash-table-set! ht key element))
+         ))
+     input-list)
+    (hash-table-values ht)
+    ))
 
 (define enum:port-types
   '(binary-input textual-input binary-output textual-output
@@ -128,6 +144,16 @@
 
   (display-enum #x10 enum:port-types)
   (display-enum #x20 enum:buffering-modes)
+
+  (let*
+      ((errors (cdr (process->sexp "tools/GenerateErrorNames")))
+       (errors (remove-duplicates errors caddr))
+       (errors (list->vector errors))
+       )
+    (sort! errors < caddr)
+    (writeln `(define errno-values ,(vector-map caddr errors)))
+    (writeln `(define errno-names ,(vector-map cadr errors)))
+    )
 
   (displayln "))")
   )
