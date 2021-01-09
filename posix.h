@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 static int pa_errno() { return errno; }
 
