@@ -41,6 +41,19 @@
 
 (define pid cs:current-process-id)
 
+(define (%nice delta)
+  (let* ((return-value (pa-nice delta))
+         (errno (pa-errno)))
+    (if (= 0 errno) return-value
+        (raise (posix-error errno))
+        )))
+
+(define nice
+  (case-lambda
+   (() (%nice 1))
+   ((d) (%nice d))
+  ))
+
 ;; Section 3.6
 
 (define (double-check-chibi-info proc getter:id getter:name)

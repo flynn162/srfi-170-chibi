@@ -137,6 +137,7 @@
   (displayln "(define-library (170)")
   (writeln
    '(import (scheme base)
+            (scheme case-lambda)
             (prefix (chibi filesystem) cs:)
             (prefix (chibi system) cs:)
             (prefix (chibi process) cs:)

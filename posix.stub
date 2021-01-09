@@ -3,3 +3,4 @@
 (c-include "posix.h")
 (define-c int pa-errno ())
 (define-c (free maybe-null string) pa-strerror (int))
+(define-c int pa-nice (int))

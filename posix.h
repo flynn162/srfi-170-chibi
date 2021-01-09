@@ -11,3 +11,8 @@ static char* pa_strerror(int error_number) {
     strerror_r(error_number, buf, len);
     return buf;
 }
+
+static int pa_nice(int delta) {
+    errno = 0;
+    return nice(delta);
+}
