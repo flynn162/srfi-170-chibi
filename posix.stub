@@ -1,5 +1,5 @@
 ;; -*- scheme -*-
 
-(c-system-include "errno.h")
-(c-declare "static int pa_errno() { return errno; }")
+(c-include "posix.h")
 (define-c int pa-errno ())
+(define-c (free maybe-null string) pa-strerror (int))

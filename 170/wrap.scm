@@ -17,7 +17,7 @@
   (let* ((idx (vector-binary-search errno-values errno cmp))
          (name (if (not idx) 'EUNKNOWN (vector-ref errno-names idx)))
          )
-    (%make-posix-error errno name "There was an error")
+    (%make-posix-error errno name (pa-strerror errno))
     ))
 
 ;; Section 3.2
