@@ -138,6 +138,7 @@
   (writeln
    '(import (scheme base)
             (scheme case-lambda)
+            (prefix (scheme process-context) r7rs:)
             (prefix (chibi filesystem) cs:)
             (prefix (chibi system) cs:)
             (prefix (chibi process) cs:)

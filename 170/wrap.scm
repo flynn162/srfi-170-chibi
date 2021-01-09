@@ -86,6 +86,13 @@
 (define group-info:name cs:group-name)
 (define group-info:gid cs:group-id)
 
+;; Section 3.10
+
+;; Section 3.11
+
+(define get-environment-variables r7rs:get-environment-variables)
+(define get-environment-variable r7rs:get-environment-variable)
+
 ;; Section 3.12
 
 (define (terminal? port)
