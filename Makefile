@@ -17,9 +17,7 @@ export CC
 
 all: 170/posix.$(so) 170.sld
 
-posix.stub: posix.h
-
-170/posix.$(so): posix.stub
+170/posix.$(so): posix.stub posix.h
 	$(info ;; Compiling FFI stub...)
 	$(TX) posix.tmp.c -- $(CHIBI_FFI) < $<
 	$(CC) -fPIC -shared -lchibi-scheme $(CFLAGS) -o $@ posix.tmp.c
