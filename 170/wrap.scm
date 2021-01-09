@@ -51,8 +51,12 @@
 (define nice
   (case-lambda
    (() (%nice 1))
-   ((d) (%nice d))
-  ))
+   ((delta) (cond
+             ((not (integer? delta)) (error "Delta must be an integer"))
+             ((< delta -100) (%nice -100))
+             ((> delta 100) (%nice 100))
+             (#t (%nice delta)))
+    )))
 
 ;; Section 3.6
 
