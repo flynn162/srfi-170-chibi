@@ -13,8 +13,6 @@ else
   so := so
 endif
 
-export CC
-
 all: 170/posix.$(so) 170.sld
 
 170/posix.$(so): posix.stub posix.h
@@ -28,7 +26,7 @@ all: 170/posix.$(so) 170.sld
 
 tools/GenerateErrorNames: tools/errnames.sh tools/errno_utils.h
 	$(info ;; Compiling errno tool...)
-	$(TX) $@.tmp.c -- $<
+	$(TX) $@.tmp.c -- $< -- $(CC)
 	$(CC) $(CFLAGS) -o $@ $@.tmp.c
 
 clean:
