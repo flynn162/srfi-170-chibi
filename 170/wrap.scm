@@ -97,6 +97,25 @@
 (define get-environment-variables r7rs:get-environment-variables)
 (define get-environment-variable r7rs:get-environment-variable)
 
+(define (set-environment-variable! name value)
+  (let ((result (pa-setenv name value)))
+    (cond
+     ((= result 0) #t)
+     ((= result -1) (raise (posix-error (pa-errno))))
+     ((= result -2) (error "Environment variable name"))
+     ((= result -3) (error "Environment variable value"))
+     (#t (error "Unknown error"))
+     )))
+
+(define (delete-environment-variable! name)
+  (let ((result (pa-unsetenv name)))
+    (cond
+     ((= result 0) #t)
+     ((= result -1) (raise (posix-error (pa-errno))))
+     ((= result -2) (error "Parameter"))
+     (#t (error "Unknown error"))
+     )))
+
 ;; Section 3.12
 
 (define (terminal? port)

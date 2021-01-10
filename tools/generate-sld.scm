@@ -128,7 +128,7 @@
 
     ;; For debugging purposes
 
-    pa-errno pa-strerror
+    pa-errno pa-strerror pa-setenv pa-unsetenv
     ))
 
 (define (generate-sld)

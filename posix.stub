@@ -4,3 +4,5 @@
 (define-c int pa-errno ())
 (define-c (free maybe-null string) pa-strerror (int))
 (define-c int pa-nice (int))
+(define-c int pa-setenv (sexp sexp))
+(define-c int pa-unsetenv (sexp))

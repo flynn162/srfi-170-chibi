@@ -1,11 +1,27 @@
+#include <chibi/eval.h>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 /* XSI strerror available if (_POSIX_C_SOURCE >= 200112L) && ! _GNU_SOURCE */
 #if __linux__ && (_POSIX_C_SOURCE < 200112L || defined(_GNU_SOURCE))
     #define GNU_STRERROR 1
 #endif
+
+static const char* ensure_proper_string(sexp expression) {
+    if (!sexp_stringp(expression)) return NULL;
+
+    const char* data = sexp_string_data(expression);
+    size_t size = sexp_string_size(expression);
+
+    /* Check NULL termination */
+    if (data[size] != '\0') return NULL;
+    /* Check if there are NULLs in between */
+    if (strlen(data) != size) return NULL;
+
+    return data;
+}
 
 static int pa_errno() { return errno; }
 
@@ -31,4 +47,18 @@ static char* pa_strerror(int error_number) {
 static int pa_nice(int delta) {
     errno = 0;
     return nice(delta);
+}
+
+static int pa_setenv(sexp key, sexp val) {
+    const char* key_data = ensure_proper_string(key);
+    const char* val_data = ensure_proper_string(val);
+    if (key_data == NULL) return -2;
+    if (val_data == NULL) return -3;
+    return setenv(key_data, val_data, 1);
+}
+
+static int pa_unsetenv(sexp key) {
+    const char* key_data = ensure_proper_string(key);
+    if (key_data == NULL) return -2;
+    return unsetenv(key_data);
 }
