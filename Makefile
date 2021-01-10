@@ -4,7 +4,7 @@ CC := cc
 RMFV := rm -fv
 TX := tools/txshout.sh
 
-CFLAGS := -O3 $(CFLAGS)
+CFLAGS := -Wall -Werror -O3 $(CFLAGS)
 
 uname := $(shell uname)
 ifeq ($(uname), Darwin)
