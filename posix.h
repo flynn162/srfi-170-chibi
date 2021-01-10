@@ -1,7 +1,11 @@
 #include <chibi/eval.h>
 #include <errno.h>
 #include <string.h>
+
+/* pa_nice */
 #include <unistd.h>
+
+/* pa_setenv pa_unsetenv */
 #include <stdlib.h>
 
 /* XSI strerror available if (_POSIX_C_SOURCE >= 200112L) && ! _GNU_SOURCE */
