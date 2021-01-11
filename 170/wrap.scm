@@ -34,6 +34,25 @@
 
 ;; Section 3.3
 
+(define rename-file (wrap-errno-procedure cs:rename-file))
+
+;; set-file-times*
+
+;; file-info:atime*
+
+;; file-info:mtime*
+
+;; file-info:ctime*
+
+(define (set-file-mode fname mode)
+  ;; Note: the FFI signature of cs:chmod is not accurate
+  (let ((result (cs:chmod fname mode)))
+    (cond
+     ((and (boolean? result) result) #t)
+     ((and (integer? result) (= 0 result)) #t)
+     (#t (raise (posix-error (pa-errno))))
+     )))
+
 ;; Section 3.5
 
 (define current-directory cs:current-directory)
