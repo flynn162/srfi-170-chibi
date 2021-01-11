@@ -20,13 +20,7 @@
     (%make-posix-error errno name (pa-strerror errno))
     ))
 
-;; Section 3.2
-
-;; Section 3.3
-
-;; Section 3.5
-
-(define current-directory cs:current-directory)
+;; Helper functions for posix-error
 
 (define (wrap-errno-procedure proc)
   (lambda (arg)
@@ -35,6 +29,14 @@
           (raise (posix-error (pa-errno)))
           result)
       )))
+
+;; Section 3.2
+
+;; Section 3.3
+
+;; Section 3.5
+
+(define current-directory cs:current-directory)
 
 (define set-current-directory!
   (wrap-errno-procedure cs:change-directory))
