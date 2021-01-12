@@ -35,6 +35,7 @@
 ;; Section 3.3
 
 (define rename-file (wrap-errno-procedure cs:rename-file))
+(define delete-directory (wrap-errno-procedure cs:delete-directory))
 
 ;; set-file-times*
 
