@@ -1,6 +1,7 @@
 ;; -*- scheme -*-
 
 (c-include "posix.h")
+(define-c sexp pa-is-safe-c-string (sexp))
 (define-c int pa-errno ())
 (define-c (free maybe-null string) pa-strerror (int))
 (define-c int pa-nice (int))

@@ -13,6 +13,13 @@
     #define GNU_STRERROR 1
 #endif
 
+/**
+ * Ensure the `expression` is a string whose data can be unambiguously passed
+ * from scheme to C.
+ *
+ * Returns a pointer to the string data on success, or NULL on failure.
+ * DO NOT free the pointer!
+ */
 static const char* ensure_proper_string(sexp expression) {
     if (!sexp_stringp(expression)) return NULL;
 
@@ -25,6 +32,16 @@ static const char* ensure_proper_string(sexp expression) {
     if (strlen(data) != size) return NULL;
 
     return data;
+}
+
+/**
+ * Check if the expression can be passed to C as an unambiguous, safe string.
+ *
+ * Returns SEXP_TRUE on success and SEXP_FALSE on failure.
+ */
+static sexp pa_is_safe_c_string(sexp expression) {
+    const char* result = ensure_proper_string(expression);
+    return (result == NULL) ? SEXP_FALSE : SEXP_TRUE;
 }
 
 static int pa_errno() { return errno; }
