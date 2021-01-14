@@ -30,7 +30,7 @@
       ((not (pa-is-safe-c-string (car curr)))
        (error "Invalid parameter #" counter))
       (#t
-       (loop (cdr args) (+ 1 counter)))
+       (loop (cdr curr) (+ 1 counter)))
       )))
 
 (define-syntax %errno-procedure-syntax
