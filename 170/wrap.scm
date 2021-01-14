@@ -22,20 +22,45 @@
 
 ;; Helper functions for posix-error
 
-(define (wrap-errno-procedure proc)
-  (lambda (arg)
-    (let ((result (proc arg)))
-      (if (equal? #f result)
-          (raise (posix-error (pa-errno)))
-          result)
+(define (%safe-c-string-checks . args)
+  (let loop ((curr args) (counter 1))
+     (cond
+      ((null? curr)
+       #t)
+      ((not (pa-is-safe-c-string (car curr)))
+       (error "Invalid parameter #" counter))
+      (#t
+       (loop (cdr args) (+ 1 counter)))
       )))
+
+(define-syntax %errno-procedure-syntax
+  (syntax-rules ()
+    ((_ proc args ...))
+    (let ((result (proc args ...)))
+      (if (equal? #f result) (raise (posix-error (pa-errno))))
+      result)
+    ))
+
+(define-syntax define/errno
+  (syntax-rules (:safe-path)
+    ;; e.g. (define/errno :safe-path (rename-file p1 p2) cs:rename-file)
+    ((_ :safe-path (proc-name args ...) og-proc-name))
+    (define (proc-name args ...)
+      (%safe-c-string-checks args ...)
+      (%errno-procedure-syntax og-proc-name args ...)
+      )
+    ;; e.g. (define/errno (my-umask mask) some-package:umask)
+    ((_ (proc-name args ...) og-proc-name))
+     (define (proc-name args ...)
+       (%errno-procedure-syntax og-proc-name args ...))
+    ))
 
 ;; Section 3.2
 
 ;; Section 3.3
 
-(define rename-file (wrap-errno-procedure cs:rename-file))
-(define delete-directory (wrap-errno-procedure cs:delete-directory))
+(define/errno :safe-path (rename-file path1 path2) cs:rename-file)
+(define/errno :safe-path (delete-directory dir) cs:delete-directory)
 
 ;; set-file-times*
 
@@ -46,6 +71,8 @@
 ;; file-info:ctime*
 
 (define (set-file-mode fname mode)
+  (if (not (pa-is-safe-c-string fname))
+      (error "Invalid file name parameter"))
   ;; Note: the FFI signature of cs:chmod is not accurate
   (let ((result (cs:chmod fname mode)))
     (cond
@@ -57,9 +84,7 @@
 ;; Section 3.5
 
 (define current-directory cs:current-directory)
-
-(define set-current-directory!
-  (wrap-errno-procedure cs:change-directory))
+(define/errno :safe-path (set-current-directory! dir) cs:change-directory)
 
 (define pid cs:current-process-id)
 
