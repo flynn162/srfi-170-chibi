@@ -35,24 +35,25 @@
 
 (define-syntax %errno-procedure-syntax
   (syntax-rules ()
-    ((_ proc args ...))
-    (let ((result (proc args ...)))
-      (if (equal? #f result) (raise (posix-error (pa-errno))))
-      result)
-    ))
+    ((_ proc args ...)
+     (let ((result (proc args ...)))
+       (if (equal? #f result) (raise (posix-error (pa-errno))))
+       result)
+     )))
 
 (define-syntax define/errno
   (syntax-rules (:safe-path)
     ;; e.g. (define/errno :safe-path (rename-file p1 p2) cs:rename-file)
-    ((_ :safe-path (proc-name args ...) og-proc-name))
-    (define (proc-name args ...)
-      (%safe-c-string-checks args ...)
-      (%errno-procedure-syntax og-proc-name args ...)
-      )
-    ;; e.g. (define/errno (my-umask mask) some-package:umask)
-    ((_ (proc-name args ...) og-proc-name))
+    ((_ :safe-path (proc-name args ...) og-proc-name)
      (define (proc-name args ...)
-       (%errno-procedure-syntax og-proc-name args ...))
+       (%safe-c-string-checks args ...)
+       (%errno-procedure-syntax og-proc-name args ...)
+       ))
+    ;; e.g. (define/errno (my-umask mask) some-package:umask)
+    ((_ (proc-name args ...) og-proc-name)
+     (define (proc-name args ...)
+       (%errno-procedure-syntax og-proc-name args ...)
+       ))
     ))
 
 ;; Section 3.2
