@@ -129,6 +129,7 @@
     ;; For debugging purposes
 
     pa-is-safe-c-string pa-errno pa-strerror pa-setenv pa-unsetenv
+    pa-print-features
     ))
 
 (define (generate-sld)

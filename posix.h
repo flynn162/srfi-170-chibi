@@ -13,6 +13,11 @@
     #define GNU_STRERROR 1
 #endif
 
+/* Use secure_getenv if provided */
+#if defined(_GNU_SOURCE)
+    #define GNU_SECURE_GETENV 1
+#endif
+
 /**
  * Ensure the `expression` is a string whose data can be unambiguously passed
  * from scheme to C.
@@ -53,7 +58,7 @@ static char* pa_strerror(int error_number) {
     memset(buf, 0, len);
     strcpy(buf, "(Unable to get the error message)");
 
-#if GNU_STRERROR
+#if GNU_STRERROR == 1
     char* gnu_result = strerror_r(error_number, buf, len);
     if (gnu_result != buf) strncpy(buf, gnu_result, len - 1);
 #else
@@ -82,4 +87,16 @@ static int pa_unsetenv(sexp key) {
     const char* key_data = ensure_proper_string(key);
     if (key_data == NULL) return -2;
     return unsetenv(key_data);
+}
+
+/* feature flag generation */
+#define XSTR(x) #x
+#define check_feature(ctr, feature) \
+    if(XSTR(feature)[0] == '1') { ctr++; fputs(#feature " ", stdout); }
+
+static void pa_print_features() {
+    size_t ctr = 0;
+    check_feature(ctr, GNU_STRERROR);
+    check_feature(ctr, GNU_SECURE_GETENV);
+    if (ctr > 0) putchar('\n');
 }

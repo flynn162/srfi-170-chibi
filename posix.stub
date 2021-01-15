@@ -7,3 +7,4 @@
 (define-c int pa-nice (int))
 (define-c int pa-setenv (sexp sexp))
 (define-c int pa-unsetenv (sexp))
+(define-c void pa-print-features ())
