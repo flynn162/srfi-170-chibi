@@ -15,7 +15,7 @@ endif
 
 all: 170/posix.$(so) 170.sld
 
-170/posix.$(so): posix.stub posix.h
+170/posix.$(so): posix.stub posix.h after_init.h
 	$(info ;; Compiling FFI stub...)
 	$(TX) posix.tmp.c -- $(CHIBI_FFI) < $<
 	$(CC) -fPIC -shared -lchibi-scheme $(CFLAGS) -o $@ posix.tmp.c

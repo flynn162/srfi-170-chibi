@@ -51,6 +51,11 @@ static sexp pa_is_safe_c_string(sexp expression) {
 
 static int pa_errno() { return errno; }
 
+/**
+ * Returns NULL or a newly allocated string for the error message. In case of
+ * allocation errors, the NULL is returned. Otherwise, it is the caller's
+ * responsibility to free the string.
+ */
 static char* pa_strerror(int error_number) {
     const size_t len = 255;
     char* buf = malloc(len);
@@ -68,6 +73,17 @@ static char* pa_strerror(int error_number) {
 #endif
 
     return buf;
+}
+
+sexp pa_strerror_stub(sexp ctx, sexp self, sexp_sint_t n,
+                      sexp error_number) {
+    char* byte_buffer = pa_strerror(sexp_sint_value(error_number));
+    if (byte_buffer == NULL) return SEXP_FALSE;
+    /* This function mem-copies the buffer */
+    sexp res = sexp_c_string(ctx, byte_buffer, -1);
+    free(byte_buffer);
+    /* Not a locally-scoped temp variable. Do not call preserve on it. */
+    return res;
 }
 
 static int pa_nice(int delta) {
