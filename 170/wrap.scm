@@ -1,12 +1,17 @@
 ;; Section 3.1
 
-(define-record-type PosixError
-  (%make-posix-error number name message)
-  posix-error?
-  (number posix-error-number)
-  (name posix-error-name)
-  (message posix-error-message)
-  )
+(define (%make-posix-error number name message)
+  (vector '<posix-error> number name message))
+
+(define (posix-error? obj)
+  (and (vector? obj)
+       (= 4 (vector-length obj))
+       (symbol=? '<posix-error> (vector-ref obj 0))
+       ))
+
+(define (posix-error-number obj) (vector-ref obj 1))
+(define (posix-error-name obj) (vector-ref obj 2))
+(define (posix-error-message obj) (vector-ref obj 3))
 
 (define (posix-error errno)
   (define (cmp a b)
