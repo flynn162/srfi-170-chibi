@@ -52,16 +52,11 @@ static sexp pa_is_safe_c_string(sexp expression) {
 static int pa_errno() { return errno; }
 
 /**
- * Returns NULL or a newly allocated string for the error message. In case of
- * allocation errors, the NULL is returned. Otherwise, it is the caller's
- * responsibility to free the string.
+ * Fills the buffer with a NUL-terminated error message. The buffer should be
+ * sufficiently large (e.g. >= 32 bytes) to hold the entire message.
  */
-static char* pa_strerror(int error_number) {
-    const size_t len = 255;
-    char* buf = malloc(len);
-    if (buf == NULL) return NULL;
+static void pa_strerror(int error_number, char* buf, const size_t len) {
     memset(buf, 0, len);
-    strcpy(buf, "(Unable to get the error message)");
 
 #if GNU_STRERROR == 1
     char* gnu_result = strerror_r(error_number, buf, len);
@@ -71,17 +66,16 @@ static char* pa_strerror(int error_number) {
     int xsi_result = strerror_r(error_number, buf, len);
     if (xsi_result != 0) errno = old_errno;
 #endif
-
-    return buf;
 }
 
 sexp pa_strerror_stub(sexp ctx, sexp self, sexp_sint_t n,
                       sexp error_number) {
-    char* byte_buffer = pa_strerror(sexp_sint_value(error_number));
-    if (byte_buffer == NULL) return SEXP_FALSE;
+    /* Copy the error string into an on-stack buffer. */
+    const size_t len = 255;
+    char byte_buffer[len];
+    pa_strerror(sexp_sint_value(error_number), byte_buffer, len);
     /* This function mem-copies the buffer */
     sexp res = sexp_c_string(ctx, byte_buffer, -1);
-    free(byte_buffer);
     /* Not a locally-scoped temp variable. Do not call preserve on it. */
     return res;
 }
